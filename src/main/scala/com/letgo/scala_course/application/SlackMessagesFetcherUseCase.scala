@@ -15,19 +15,21 @@ class SlackMessagesFetcherUseCase(slackClient: SlackClient)(implicit ec: Executi
   }
 
   def fetchWithCache(channelName: ChannelId): Future[Seq[Message]] = {
+
+    /*
     cache.getOrElse {
       val messages = fetch(channelName)
       cache = Some(messages)
       messages
-    }
-    /*
+    }*/
+
     cache match {
       case Some(messages) => messages
       case None => {
         val messages = fetch(channelName)
         cache = Some(messages)
-        messages
+        fetchWithCache(channelName)
       }
-    }*/
+    }
   }
 }
